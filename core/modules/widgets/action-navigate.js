@@ -36,6 +36,7 @@ Compute the internal state of the widget
 */
 NavigateWidget.prototype.execute = function() {
 	this.actionTo = this.getAttribute("$to");
+	this.actionToRandom = this.getAttribute("$to-random");
 	this.actionScroll = this.getAttribute("$scroll");
 };
 
@@ -62,6 +63,13 @@ NavigateWidget.prototype.invokeAction = function(triggeringWidget,event) {
 	} else if(this.actionScroll === "no") {
 		suppressNavigation = true;
 	}
+	if(this.actionToRandom !== undefined) {
+		var list = this.wiki.filterTiddlers(this.actionToRandom,this);
+		var p = Math.floor(Math.random()*list.length);
+		if(list[p] !== undefined) {
+			this.actionTo = list[p];
+		}
+	}
 	this.dispatchEvent({
 		type: "tm-navigate",
 		navigateTo: this.actionTo === undefined ? this.getVariable("currentTiddler") : this.actionTo,
@@ -77,3 +85,4 @@ NavigateWidget.prototype.invokeAction = function(triggeringWidget,event) {
 exports["action-navigate"] = NavigateWidget;
 
 })();
+
